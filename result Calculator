@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Result Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 900px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 25px;
+            border-right: 1px solid #eee;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: #6a11cb;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(to right, #11998e, #38ef7d);
+        }
+
+        .btn-danger {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+        }
+
+        .subject-list {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .subject-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #6a11cb;
+        }
+
+        .subject-info {
+            flex: 1;
+        }
+
+        .subject-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .subject-marks {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .subject-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .result-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 25px;
+            background-color: #f8f9fa;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .result-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f0f2f5;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4a00e0;
+        }
+
+        .grade {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .grade-A {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .grade-B {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .grade-C {
+            background-color: #fff8e1;
+            color: #f57f17;
+        }
+
+        .grade-D {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .grade-F {
+            background-color: #f5f5f5;
+            color: #424242;
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            height: 200px;
+            position: relative;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calculator"></i> Student Result Calculator</h1>
+            <p>Calculate your academic performance with ease</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="studentName"><i class="fas fa-user"></i> Student Name</label>
+                    <input type="text" id="studentName" placeholder="Enter student name">
+                </div>
+                
+                <div class="input-group">
+                    <label for="subjectName"><i class="fas fa-book"></i> Subject Name</label>
+                    <input type="text" id="subjectName" placeholder="Enter subject name">
+                </div>
+                
+                <div class="input-group">
+                    <label for="marksObtained"><i class="fas fa-check-circle"></i> Marks Obtained</label>
+                    <input type="number" id="marksObtained" placeholder="Enter marks obtained" min="0" max="100">
+                </div>
+                
+                <div class="input-group">
+                    <label for="totalMarks"><i class="fas fa-chart-bar"></i> Total Marks</label>
+                    <input type="number" id="totalMarks" placeholder="Enter total marks" min="1" value="100">
+                </div>
+                
+                <button class="btn" id="addSubject">
+                    <i class="fas fa-plus"></i> Add Subject
+                </button>
+                
+                <div class="subject-list" id="subjectList">
+                    <div class="empty-state" id="emptyState">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>No subjects added yet</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn btn-secondary" id="calculateResult">
+                        <i class="fas fa-calculator"></i> Calculate Result
+                    </button>
+                    <button class="btn btn-danger" id="resetAll">
+                        <i class="fas fa-trash"></i> Reset All
+                    </button>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <div class="result-card">
+                    <h2 class="result-title">Result Summary</h2>
+                    
+                    <div class="result-details">
+                        <div class="result-item">
+                            <span class="result-label">Total Subjects</span>
+                            <span class="result-value" id="totalSubjects">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Total Marks</span>
+                            <span class="result-value" id="totalMarksValue">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Obtained Marks</span>
+                            <span class="result-value" id="obtainedMarks">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Percentage</span>
+                            <span class="result-value" id="percentage">0%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grade" id="gradeDisplay">
+                        Add subjects to calculate grade
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <h2 class="result-title">Performance Chart</h2>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // DOM Elements
+        const studentNameInput = document.getElementById('studentName');
+        const subjectNameInput = document.getElementById('subjectName');
+        const marksObtainedInput = document.getElementById('marksObtained');
+        const totalMarksInput = document.getElementById('totalMarks');
+        const addSubjectBtn = document.getElementById('addSubject');
+        const subjectList = document.getElementById('subjectList');
+        const emptyState = document.getElementById('emptyState');
+        const calculateResultBtn = document.getElementById('calculateResult');
+        const resetAllBtn = document.getElementById('resetAll');
+        
+        // Result elements
+        const totalSubjectsEl = document.getElementById('totalSubjects');
+        const totalMarksValueEl = document.getElementById('totalMarksValue');
+        const obtainedMarksEl = document.getElementById('obtainedMarks');
+        const percentageEl = document.getElementById('percentage');
+        const gradeDisplayEl = document.getElementById('gradeDisplay');
+        
+        // Data storage
+        let subjects = [];
+        let performanceChart = null;
+        
+        // Add subject to the list
+        addSubjectBtn.addEventListener('click', function() {
+            const subjectName = subjectNameInput.value.trim();
+            const marksObtained = parseInt(marksObtainedInput.value);
+            const totalMarks = parseInt(totalMarksInput.value);
+            
+            if (!subjectName) {
+                alert('Please enter a subject name');
+                return;
+            }
+            
+            if (isNaN(marksObtained) || marksObtained < 0) {
+                alert('Please enter valid marks obtained');
+                return;
+            }
+            
+            if (isNaN(totalMarks) || totalMarks <= 0) {
+                alert('Please enter valid total marks');
+                return;
+            }
+            
+            if (marksObtained > totalMarks) {
+                alert('Marks obtained cannot be greater than total marks');
+                return;
+            }
+            
+            // Add subject to array
+            subjects.push({
+                name: subjectName,
+                marksObtained: marksObtained,
+                totalMarks: totalMarks,
+                percentage: (marksObtained / totalMarks) * 100
+            });
+            
+            // Update UI
+            updateSubjectList();
+            
+            // Clear input fields
+            subjectNameInput.value = '';
+            marksObtainedInput.value = '';
+            totalMarksInput.value = '100';
+            subjectNameInput.focus();
+        });
+        
+        // Update the subject list in the UI
+        function updateSubjectList() {
+            if (subjects.length === 0) {
+                emptyState.style.display = 'block';
+                subjectList.innerHTML = '';
+                subjectList.appendChild(emptyState);
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            let html = '';
+            subjects.forEach((subject, index) => {
+                html += `
+                    <div class="subject-item">
+                        <div class="subject-info">
+                            <div class="subject-name">${subject.name}</div>
+                            <div class="subject-marks">${subject.marksObtained} / ${subject.totalMarks} (${subject.percentage.toFixed(2)}%)</div>
+                        </div>
+                        <div class="subject-actions">
+                            <button class="btn btn-danger" onclick="removeSubject(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            subjectList.innerHTML = html;
+        }
+        
+        // Remove a subject from the list
+        function removeSubject(index) {
+            subjects.splice(index, 1);
+            updateSubjectList();
+        }
+        
+        // Calculate the result
+        calculateResultBtn.addEventListener('click', function() {
+            if (subjects.length === 0) {
+                alert('Please add at least one subject to calculate the result');
+                return;
+            }
+            
+            const studentName = studentNameInput.value.trim() || 'Student';
+            
+            // Calculate totals
+            const totalSubjects = subjects.length;
+            const totalMarks = subjects.reduce((sum, subject) => sum + subject.totalMarks, 0);
+            const obtainedMarks = subjects.reduce((sum, subject) => sum + subject.marksObtained, 0);
+            const percentage = (obtainedMarks / totalMarks) * 100;
+            
+            // Determine grade
+            let grade = '';
+            let gradeClass = '';
+            
+            if (percentage >= 90) {
+                grade = 'A+';
+                gradeClass = 'grade-A';
+            } else if (percentage >= 80) {
+                grade = 'A';
+                gradeClass = 'grade-A';
+            } else if (percentage >= 70) {
+                grade = 'B';
+                gradeClass = 'grade-B';
+            } else if (percentage >= 60) {
+                grade = 'C';
+                gradeClass = 'grade-C';
+            } else if (percentage >= 50) {
+                grade
